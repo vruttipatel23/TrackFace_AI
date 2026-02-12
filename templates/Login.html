@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FaceTrack AI | Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <main class="container">
+        <div class="glass-box reg-card">
+            <header>
+                <h2>Please Select your role to Login</h2>
+            </header>
+
+            <div class="role-selection-grid">
+                <a href="/login-form?role=student" class="role-card student-card">
+                    <div class="card-info">
+                        <h3><i class="fa-solid fa-user-graduate"></i><br>Student</h3>
+                    </div>
+                </a>
+
+                <a href="/login-form?role=faculty" class="role-card faculty-card">
+                    <div class="card-info">
+                        <h3><i class="fa-solid fa-user-tie"></i><br>Faculty</h3>
+                    </div>
+                </a>
+            </div>
+
+            <a href="/" class="action-card back-link">Back to Home</a>
+        </div>
+    </main>
+</body>
+
+</html>

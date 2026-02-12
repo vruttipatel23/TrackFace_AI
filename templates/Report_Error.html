@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Report Attendance Error | FaceTrack AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="bg-decoration">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+    </div>
+    
+    <main class="container">
+        <div class="glass-box" style="max-width: 500px; padding: 35px; border-radius: 20px;">
+            <header style="text-align: center; margin-bottom: 25px;">
+                <h2 style="font-size: 1.8rem; color: var(--text-dark);">Report <span>Issue</span></h2>
+                <p style="color: #666; font-size: 0.95rem; margin-top: 10px;">
+                    <i class="fa-solid fa-book-open"></i> Subject: <b>{{ record.session_ref.subject }}</b> <br>
+                    <i class="fa-solid fa-calendar-day"></i> Date: <b>{{ record.session_ref.date }}</b>
+                </p>
+            </header>
+
+            <form method="POST" style="margin-top: 20px;">
+                <div class="input-group full-width">
+                    <label style="font-weight: 700; color: #444; margin-bottom: 10px; display: block;">
+                        Why should your attendance be updated?
+                    </label>
+                    <textarea 
+                        name="reason" 
+                        placeholder="Example: I was present in the class but my face was not detected in the photo due to low light..." 
+                        rows="5" 
+                        style="width: 100%; border-radius: 12px; padding: 15px; border: 1.5px solid #e2e8f0; outline: none; font-family: inherit; transition: border-color 0.3s;" 
+                        required></textarea>
+                </div>
+                
+                <button type="submit" class="submit-btn" style="margin-top: 25px; width: 100%; font-size: 1rem; letter-spacing: 0.5px;">
+                    <i class="fa-solid fa-paper-plane"></i> Send Request to Faculty
+                </button>
+            </form>
+
+            <footer style="text-align: center; margin-top: 20px;">
+                <a href="/student-dashboard" style="color: #64748b; text-decoration: none; font-size: 0.9rem; font-weight: 600;">
+                    <i class="fa-solid fa-xmark"></i> Cancel & Go Back
+                </a>
+            </footer>
+        </div>
+    </main>
+</body>
+</html>

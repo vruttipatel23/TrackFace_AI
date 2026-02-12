@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manual Fix | FaceTrack AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="bg-decoration"><div class="shape shape-1"></div></div>
+    
+    <main class="container">
+        <div class="glass-box form-wide" style="max-width: 600px !important;">
+            <header style="margin-bottom: 25px;">
+                <h2>Manual <span>Attendance Fix</span></h2>
+                <p style="color: var(--text-gray);">Update attendance records by Enrollment Number</p>
+            </header>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                {% for category, message in messages %}
+                  <div class="alert alert-{{ 'success' if category == 'success' else 'error' }}" 
+                       style="background: {{ '#e6fffa' if category == 'success' else '#fff5f5' }}; 
+                              color: {{ '#2c7a7b' if category == 'success' else '#c53030' }}; 
+                              padding: 12px; border-radius: 8px; margin-bottom: 20px;">
+                      {{ message }}
+                  </div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+
+            <form action="/faculty/process-manual-fix" method="POST" class="form-grid">
+                <div class="input-group full-width">
+                    <label>Student Enrollment No</label>
+                    <input type="text" name="enroll" placeholder="Enter Enrollment No (e.g. 21BE001)" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Subject</label>
+                    <select name="subject" required>
+                        <option value="" disabled selected>Select Subject</option>
+                        {% for sub in subjects %}
+                        <option value="{{ sub }}">{{ sub }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label>Date</label>
+                    <input type="date" name="date" required>
+                </div>
+
+                <div class="input-group full-width">
+                    <label>New Status</label>
+                    <select name="status" required>
+                        <option value="Present">Present</option>
+                        <option value="Absent">Absent</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="submit-btn">Update Record</button>
+            </form>
+            
+            <div style="text-align: center; margin-top: 20px;">
+                <a href="/faculty-dashboard" class="back-link">Back to Dashboard</a>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

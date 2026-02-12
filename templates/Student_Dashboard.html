@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Dashboard | FaceTrack AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="bg-decoration"><div class="shape shape-1"></div></div>
+    
+    <main class="container">
+        <div class="glass-box" style="max-width: 1000px;">
+            <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                <div>
+                    <h1>Hello, <span>{{ name }}</span></h1>
+                    <p style="color: var(--text-gray);">Select a subject to view detailed attendance</p>
+                </div>
+                <a href="/logout" class="logout-btn" style="margin-top: 0;"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+            </header>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        <i class="fa-solid fa-circle-check"></i> {{ message }}
+                    </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <div class="stats-grid">
+                {% for sub, data in subject_stats.items() %}
+                <div class="subject-card" onclick="showHistory('{{ sub }}', this)" style="cursor: pointer;">
+                    <h4>{{ sub }}</h4>
+                    <div class="percent" style="color: {{ '#38b2ac' if data.percent >= 75 else '#e53e3e' }}">
+                        {{ data.percent }}%
+                    </div>
+                    <p style="font-size: 0.75rem; color: var(--text-gray); margin-top: 5px;">
+                        {{ data.present }} / {{ data.total }} Lectures
+                    </p>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div id="historyWrapper" style="display: none; margin-top: 50px; animation: slideUp 0.4s ease-out;">
+                <h3 style="margin-bottom: 20px; color: var(--text-dark);" id="historyTitle">
+                    <i class="fa-solid fa-clock-rotate-left"></i> Attendance for <span></span>
+                </h3>
+                
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyBody">
+                        {% for rec, sess in records|reverse %}
+                        <tr class="att-row" data-subject="{{ sess.subject }}">
+                            <td>{{ sess.date }}</td>
+                            <td>
+                                <span class="status-tag {{ 'tag-present' if rec.status == 'Present' else 'tag-absent' }}">
+                                    {{ rec.status }}
+                                </span>
+                            </td>
+                            <td>
+                                {% if rec.status == 'Absent' %}
+                                <a href="/report-error/{{ rec.id }}" class="report-btn">
+                                    <i class="fa-solid fa-triangle-exclamation"></i> Report Error
+                                </a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function showHistory(subject, card) {
+            const wrapper = document.getElementById('historyWrapper');
+            const titleSpan = document.querySelector('#historyTitle span');
+            const rows = document.querySelectorAll('.att-row');
+            const cards = document.querySelectorAll('.subject-card');
+
+            cards.forEach(c => c.style.border = '1px solid #eee');
+            card.style.border = '2px solid var(--icon-blue)';
+
+            titleSpan.innerText = subject;
+            titleSpan.style.color = 'var(--icon-blue)';
+
+            // Filter Table Rows
+            rows.forEach(row => {
+                if(row.getAttribute('data-subject') === subject) {
+                    row.style.display = 'table-row';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+
+            
+            wrapper.style.display = 'block';
+
+            //  Smooth Scroll to History
+            wrapper.scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

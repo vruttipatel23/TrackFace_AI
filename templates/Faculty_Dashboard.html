@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faculty Dashboard | FaceTrack AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="bg-decoration">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+    </div>
+
+    <main class="container">
+        <div class="glass-box form-wide" style="max-width: 900px !important;">
+            <header class="dashboard-header">
+                <div>
+                    <h1>Welcome, <span>Prof. {{ name }}</span></h1>
+                    <p style="color: var(--text-gray);">Manage your class attendance and student records</p>
+                </div>
+            </header>
+
+            <div class="faculty-dashboard-grid">
+                <a href="/upload-classphoto" class="dashboard-card attendance-card">
+                    <div class="icon-box" style="background: rgba(0, 132, 255, 0.15); color: #0084ff;">
+                        <i class="fa-solid fa-camera-retro"></i>
+                    </div>
+                    <h3>Take Attendance</h3>
+                </a>
+
+                <a href="/faculty/review-requests" class="dashboard-card review-card">
+                    <div class="icon-box" style="background: rgba(230, 126, 34, 0.15); color: #e67e22;">
+                        <i class="fa-solid fa-clipboard-check"></i>
+                    </div>
+                    <h3>Review Requests</h3>
+                </a>
+
+                <a href="/faculty/all-reports" class="dashboard-card reports-card">
+                    <div class="icon-box" style="background: rgba(52, 152, 219, 0.15); color: #3498db;">
+                        <i class="fa-solid fa-folder-open"></i>
+                    </div>
+                    <h3>Your Reports</h3>
+                </a>
+
+                <a href="/faculty/manual-fix" class="dashboard-card manual-card">
+                    <div class="icon-box" style="background: rgba(0, 184, 148, 0.15); color: #00b894;">
+                        <i class="fa-solid fa-user-pen"></i>
+                    </div>
+                    <h3>Manual Fix</h3>
+                </a>
+            </div>
+
+            <div style="margin-top: 40px; text-align: center; border-top: 1px solid var(--border-color); padding-top: 20px;">
+                <a href="/logout" class="logout-btn">
+                    <i class="fa-solid fa-right-from-bracket"></i> Logout
+                </a>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
