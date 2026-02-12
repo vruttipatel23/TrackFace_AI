@@ -1,53 +1,46 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Student Dashboard | FaceTrack AI</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/style.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
-<body>
-    <div class="bg-decoration"><div class="shape shape-1"></div></div>
-    
-    <main class="container">
-        <div class="glass-box" style="max-width: 1000px;">
-            <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
-                <div>
-                    <h1>Hello, <span>{{ name }}</span></h1>
-                    <p style="color: var(--text-gray);">Select a subject to view detailed attendance</p>
-                </div>
-                <a href="/logout" class="logout-btn" style="margin-top: 0;"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
-            </header>
+{% extends "base.html" %}
 
-            {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    {% for category, message in messages %}
-                    <div class="alert alert-{{ category }}">
-                        <i class="fa-solid fa-circle-check"></i> {{ message }}
-                    </div>
-                    {% endfor %}
-                {% endif %}
-            {% endwith %}
+{% block title %}Student Dashboard | FaceTrack AI{% endblock %}
 
-            <div class="stats-grid">
-                {% for sub, data in subject_stats.items() %}
-                <div class="subject-card" onclick="showHistory('{{ sub }}', this)" style="cursor: pointer;">
-                    <h4>{{ sub }}</h4>
-                    <div class="percent" style="color: {{ '#38b2ac' if data.percent >= 75 else '#e53e3e' }}">
-                        {{ data.percent }}%
-                    </div>
-                    <p style="font-size: 0.75rem; color: var(--text-gray); margin-top: 5px;">
-                        {{ data.present }} / {{ data.total }} Lectures
-                    </p>
+{% block content %}
+<main class="container">
+    <div class="glass-box dashboard-wide">
+        <header class="section-header-split">
+            <div>
+                <h1>Hello, <span>{{ name }}</span></h1>
+                <p>Select a subject to view detailed attendance</p>
+            </div>
+            <a href="/logout" class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+        </header>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">
+                    <i class="fa-solid fa-circle-check"></i> {{ message }}
                 </div>
                 {% endfor %}
-            </div>
+            {% endif %}
+        {% endwith %}
 
-            <div id="historyWrapper" style="display: none; margin-top: 50px; animation: slideUp 0.4s ease-out;">
-                <h3 style="margin-bottom: 20px; color: var(--text-dark);" id="historyTitle">
-                    <i class="fa-solid fa-clock-rotate-left"></i> Attendance for <span></span>
-                </h3>
-                
+        <div class="stats-grid">
+            {% for sub, data in subject_stats.items() %}
+            <div class="subject-card" onclick="showHistory('{{ sub }}', this)">
+                <h4>{{ sub }}</h4>
+                <div class="percent {{ 'percent-good' if data.percent >= 75 else 'percent-bad' }}">
+                    {{ data.percent }}%
+                </div>
+                <p class="stats-label">{{ data.present }} / {{ data.total }} Lectures</p>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div id="historyWrapper" class="history-section" style="display: none;">
+            <h3 id="historyTitle">
+                <i class="fa-solid fa-clock-rotate-left"></i> Attendance for <span></span>
+            </h3>
+            
+            <div class="table-responsive">
                 <table class="history-table">
                     <thead>
                         <tr>
@@ -78,36 +71,33 @@
                 </table>
             </div>
         </div>
-    </main>
+    </div>
+</main>
+{% endblock %}
 
-    <script>
-        function showHistory(subject, card) {
-            const wrapper = document.getElementById('historyWrapper');
-            const titleSpan = document.querySelector('#historyTitle span');
-            const rows = document.querySelectorAll('.att-row');
-            const cards = document.querySelectorAll('.subject-card');
+{% block scripts %}
+<script>
+    function showHistory(subject, card) {
+        const wrapper = document.getElementById('historyWrapper');
+        const titleSpan = document.querySelector('#historyTitle span');
+        const rows = document.querySelectorAll('.att-row');
+        const cards = document.querySelectorAll('.subject-card');
 
-            cards.forEach(c => c.style.border = '1px solid #eee');
-            card.style.border = '2px solid var(--icon-blue)';
+        cards.forEach(c => c.classList.remove('active-card'));
+        card.classList.add('active-card');
 
-            titleSpan.innerText = subject;
-            titleSpan.style.color = 'var(--icon-blue)';
+        titleSpan.innerText = subject;
 
-            // Filter Table Rows
-            rows.forEach(row => {
-                if(row.getAttribute('data-subject') === subject) {
-                    row.style.display = 'table-row';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
+        rows.forEach(row => {
+            if(row.getAttribute('data-subject') === subject) {
+                row.style.display = 'table-row';
+            } else {
+                row.style.display = 'none';
+            }
+        });
 
-            
-            wrapper.style.display = 'block';
-
-            //  Smooth Scroll to History
-            wrapper.scrollIntoView({ behavior: 'smooth' });
-        }
-    </script>
-</body>
-</html>
+        wrapper.style.display = 'block';
+        wrapper.scrollIntoView({ behavior: 'smooth' });
+    }
+</script>
+{% endblock %}

@@ -13,17 +13,16 @@ from io import StringIO
 app = Flask(__name__)
 app.secret_key = "facetrack_secret_key_123" 
 
-# Ensure upload folder exists for processed images
 UPLOAD_FOLDER = 'static/uploads'
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 
 # DATABASE CONFIG 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:Vrutti%402309@localhost:5432/facetrack_db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:drashti131@localhost:5432/facetrack_db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
-# --- 2. MODELS --- (Keep your existing models as they are)
+# MODELS
 class Student(db.Model):
     __tablename__ = 'students'
     id = db.Column(db.Integer, primary_key=True)
@@ -71,13 +70,12 @@ class AttendanceError(db.Model):
     reason = db.Column(db.Text, nullable=False)
     status = db.Column(db.String(20), default='Pending')
 
-# --- 3. AI SETUP (ACCURACY FIX: det_size increased for classroom photos) ---
+# AI SETUP 
 face_app = FaceAnalysis(name="buffalo_l", providers=['CPUExecutionProvider'])
-face_app.prepare(ctx_id=-1, det_size=(1280, 1280)) # Increased from 320 to 640
-
+face_app.prepare(ctx_id=-1, det_size=(1280, 1280)) 
 def _l2norm(v): return v / (np.linalg.norm(v) + 1e-12)
 
-# --- 4. NAVIGATION & LOGIN ROUTES (Keep as they are) ---
+# NAVIGATION & LOGIN ROUTES 
 @app.route('/')
 def home(): return render_template('Home.html')
 
@@ -98,7 +96,7 @@ def logout():
     session.clear()
     return redirect(url_for('home'))
 
-# --- 5. REGISTRATION LOGIC --- (Keep as they are)
+# REGISTRATION LOGIC 
 @app.route('/register-faculty', methods=['POST'])
 def handle_faculty_registration():
     try:
@@ -150,7 +148,7 @@ def handle_student_registration():
         db.session.rollback()
         return jsonify({"status": "error", "message": str(e)}), 500
 
-# --- 6. LOGIN & DASHBOARDS --- (Keep as they are)
+# LOGIN & DASHBOARDS 
 @app.route('/login-process', methods=['POST'])
 def handle_login():
     try:
@@ -203,7 +201,7 @@ def student_dashboard():
 
     return render_template('Student_Dashboard.html', records=history, subject_stats=subject_data, name=session.get('student_name'))
 
-# --- 7. ATTENDANCE PROCESSING (VISUALIZATION ADDED) ---
+# ATTENDANCE PROCESSING 
 @app.route('/upload-classphoto')
 def upload_classphoto():
     if 'faculty_email' not in session: return redirect(url_for('login'))
@@ -241,15 +239,12 @@ def process_classphoto():
         ).all()
 
         found = set()
-
-        # 🔥 SAVE EACH IMAGE SEPARATELY
         for index, f in enumerate(files):
 
             img = cv2.imdecode(
                 np.frombuffer(f.read(), np.uint8),
                 cv2.IMREAD_COLOR
             )
-
             if img is None:
                 continue
 
@@ -260,7 +255,6 @@ def process_classphoto():
             ) if w < 1000 else img
 
             faces = face_app.get(img_to_process)
-
             for face in faces:
 
                 bbox = face.bbox.astype(int)
@@ -275,12 +269,10 @@ def process_classphoto():
                         box_color = (0, 255, 0)
                         student_label = s.full_name
                         break
-
                 cv2.rectangle(img_to_process,
                               (bbox[0], bbox[1]),
                               (bbox[2], bbox[3]),
                               box_color, 2)
-
                 cv2.putText(img_to_process,
                             student_label,
                             (bbox[0], bbox[1]-10),
@@ -288,8 +280,6 @@ def process_classphoto():
                             0.6,
                             box_color,
                             2)
-
-            # 🔥 Save each processed image
             filename = f"detected_{new_sess.id}_{index}.jpg"
             cv2.imwrite(os.path.join(UPLOAD_FOLDER, filename), img_to_process)
 
@@ -304,9 +294,7 @@ def process_classphoto():
                     status=status
                 )
             )
-
         db.session.commit()
-
         return redirect(url_for(
             'attendance_report',
              subject=subject,
@@ -314,7 +302,6 @@ def process_classphoto():
              semester=semester
             
         ))
-
     except Exception as e:
         db.session.rollback()
         return jsonify({
@@ -322,82 +309,11 @@ def process_classphoto():
             "message": str(e)
         }), 500
 
-# @app.route('/process-classphoto', methods=['POST'])
-# def process_classphoto():
-#     if 'faculty_email' not in session: return jsonify({"status": "error"}), 401
-#     try:
-#         subject = request.form.get('subject'); date = request.form.get('date')
-#         year = request.form.get('year'); semester = request.form.get('semester')
-#         files = request.files.getlist('class_photos')
-
-#         new_sess = AttendanceSession(subject=subject, date=date, year=year, semester=semester, faculty_email=session['faculty_email'])
-#         db.session.add(new_sess); db.session.flush()
-
-#         all_std = Student.query.filter_by(year=year, semester=semester).all()
-#         found = set()
-
-#         # visualization storage
-#         processed_img = None
-
-#         for f in files:
-#             img = cv2.imdecode(np.frombuffer(f.read(), np.uint8), cv2.IMREAD_COLOR)
-#             if img is None: continue
-            
-#             # Upscaling for better detection in group photos
-#             h, w = img.shape[:2]
-#             img_to_process = cv2.resize(img, (w*2, h*2), interpolation=cv2.INTER_CUBIC) if w < 1000 else img
-            
-#             faces = face_app.get(img_to_process)
-            
-#             for face in faces:
-#                 bbox = face.bbox.astype(int)
-#                 emb = face.normed_embedding if hasattr(face, "normed_embedding") else _l2norm(face.embedding)
-                
-#                 is_recognized = False
-#                 student_label = "Unknown"
-#                 box_color = (0, 0, 255) # Red for Unknown
-
-#                 for s in all_std:
-#                     if s.face_embedding and (1 - cosine(emb, np.array(s.face_embedding))) > 0.3:
-#                         found.add(s.enrollment_no)
-#                         is_recognized = True
-#                         student_label = s.full_name
-#                         box_color = (0, 255, 0) # Green for Recognized
-#                         break
-                
-#                 # Draw boxes and names on image
-#                 cv2.rectangle(img_to_process, (bbox[0], bbox[1]), (bbox[2], bbox[3]), box_color, 2)
-#                 cv2.putText(img_to_process, student_label, (bbox[0], bbox[1]-10), cv2.FONT_HERSHEY_SIMPLEX, 0.6, box_color, 2)
-            
-#             processed_img = img_to_process # Save the last processed image for preview
-
-#         # Save visualization to static/uploads
-#         if processed_img is not None:
-#             cv2.imwrite(os.path.join(UPLOAD_FOLDER, f"detected_{new_sess.id}.jpg"), processed_img)
-
-#         for s in all_std:
-#             status = "Present" if s.enrollment_no in found else "Absent"
-#             db.session.add(AttendanceRecord(session_id=new_sess.id, enrollment_no=s.enrollment_no, student_name=s.full_name, status=status))
-
-#         db.session.commit()
-#         # return redirect( url_for('attendance_report', session_id=new_sess.id))
-        # return redirect(url_for(
-        #     'attendance_report',
-        #     subject=subject,
-        #     year=year,
-        #     semester=semester
-        # ))
-
-#     except Exception as e:
-#         db.session.rollback(); return jsonify({"status": "error", "message": str(e)}), 500
-
-
 @app.route('/attendance-report/<subject>/<year>/<semester>')
 def attendance_report(subject, year, semester):
     if 'faculty_email' not in session:
         return redirect(url_for('login'))
 
-    # Get ALL sessions of that subject
     all_sessions = AttendanceSession.query.filter_by(
         subject=subject,
         year=year,
@@ -409,15 +325,12 @@ def attendance_report(subject, year, semester):
         flash("No attendance sessions found!", "warning")
         return redirect(url_for('faculty_dashboard'))
 
-    
-
     students = Student.query.filter_by(
         year=year,
         semester=semester
     ).all()
 
     table_data = []
-
     for student in students:
         row = {
             "enrollment_no": student.enrollment_no,
@@ -455,15 +368,12 @@ def attendance_report(subject, year, semester):
     semester=semester
 )
 
-
-
 @app.route('/download-report/<subject>/<year>/<semester>')
 def download_report(subject, year, semester):
 
     if 'faculty_email' not in session:
         return redirect(url_for('login'))
 
-    # Get ALL sessions of that subject
     all_sessions = AttendanceSession.query.filter_by(
         subject=subject,
         year=year,
@@ -516,7 +426,6 @@ def download_report(subject, year, semester):
         row.append(f"{percentage}%")
 
         writer.writerow(row)
-
     output = data.getvalue()
     data.close()
 
@@ -527,7 +436,6 @@ def download_report(subject, year, semester):
             "Content-Disposition": f"attachment; filename=Full_Attendance_{subject}.csv"
         }
     )
-
 
 @app.route('/report-error/<int:record_id>', methods=['GET', 'POST'])
 def report_error(record_id):
@@ -543,7 +451,7 @@ def report_error(record_id):
 @app.route('/faculty/review-requests')
 def review_requests():
     if 'faculty_email' not in session: return redirect(url_for('login'))
-    # Filter by faculty's subject only
+
     data = db.session.query(AttendanceError, AttendanceRecord, AttendanceSession).join(
         AttendanceRecord, AttendanceError.record_id == AttendanceRecord.id).join(
         AttendanceSession, AttendanceRecord.session_id == AttendanceSession.id
@@ -581,7 +489,6 @@ def all_reports():
 
     return render_template('All_Reports_List.html', reports=reports)
 
-
 @app.route('/faculty/manual-fix', methods=['GET', 'POST'])
 def manual_fix():
     if 'faculty_email' not in session: return redirect(url_for('login'))
@@ -602,12 +509,10 @@ def daily_report(session_id):
         session_id=session_id
     ).all()
 
-    # 🔥 Get ALL images for this session
     images = [
         f for f in os.listdir(UPLOAD_FOLDER)
         if f.startswith(f"detected_{session_id}_")
     ]
-
 
     return render_template(
         "Daily_Report.html",
@@ -615,7 +520,6 @@ def daily_report(session_id):
         records=records,
         images=images
     )
-
 
 @app.route('/faculty/process-manual-fix', methods=['POST'])
 def process_manual_fix():

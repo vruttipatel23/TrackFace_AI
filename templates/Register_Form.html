@@ -1,175 +1,159 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FaceTrack AI | Registration Form</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/style.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
-<body>
-    <div class="bg-decoration"><div class="shape shape-1"></div><div class="shape shape-2"></div></div>
-    
-    <main class="container">
-        <div class="glass-box reg-card form-wide">
-            <div id="successOverlay" class="success-overlay" style="display: none;">
-                <div class="success-icon"><i class="fa-solid fa-circle-check"></i></div>
-                <h2>Registration Successful!</h2>
-                <p>Your account has been created successfully.</p>
-                <a href="/login" class="submit-btn" style="text-decoration: none; display: inline-block; margin-top: 20px;">Go to Login</a>
-            </div>
+{% extends "base.html" %}
 
-            <header><h2 id="formTitle">Registration</h2></header>
+{% block title %}FaceTrack AI | Registration Form{% endblock %}
 
-            <form id="registrationForm">
-                <div class="form-grid">
-                    <div class="input-group full-width">
-                        <input type="text" name="full_name" placeholder="Full Name" required>
-                    </div>
-
-                    <div class="input-group" id="identifierContainer"></div>
-                    <div class="input-group" id="genderContainer"></div>
-                    <div class="input-group" id="subjectContainer"></div>
-
-                    <div class="input-group">
-                        <select name="year" required>
-                            <option value="" disabled selected>Year</option>
-                            <option value="1">1</option><option value="2">2</option>
-                            <option value="3">3</option><option value="4">4</option>
-                        </select>
-                    </div>
-
-                    <div class="input-group">
-                        <select name="semester" required>
-                            <option value="" disabled selected>Semester</option>
-                            {% for i in range(1, 9) %}<option value="{{ i }}">{{ i }}</option>{% endfor %}
-                        </select>
-                    </div>
-
-                    <div class="photo-section full-width" id="photoSection" style="display: none;">
-                        <label class="multi-upload-box" for="photoInput">
-                            <input type="file" id="photoInput" accept="image/*" multiple hidden>
-                            <i class="fa-solid fa-cloud-arrow-up"></i>
-                            <p id="uploadText">Upload Face Photos (Min 3)</p>
-                        </label>
-                        <div id="previewGrid" class="preview-grid"></div>
-                    </div>
-
-                    <div class="input-group password-wrapper" id="passContainer">
-                        <input type="password" id="passwordField" name="password" placeholder="Password">
-                        <i class="fa-solid fa-eye" id="togglePassword"></i>
-                    </div>
-
-                    <button type="submit" id="regSubmitBtn" class="submit-btn">Complete Registration</button>
-                </div>
-            </form>
-
-            <div style="text-align: center; margin-top: 15px;">
-                <a href="/register" class="back-link">Back</a>
-            </div>
+{% block content %}
+<main class="container">
+    <div class="glass-box reg-card form-wide">
+        <div id="successOverlay" class="success-overlay">
+            <div class="success-icon"><i class="fa-solid fa-circle-check"></i></div>
+            <h2>Registration Successful!</h2>
+            <p>Your account has been created successfully.</p>
+            <a href="/login" class="submit-btn">Go to Login</a>
         </div>
-    </main>
 
-    <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const role = urlParams.get('role');
-        const ADMIN_CODE = "123";
+        <header><h2 id="formTitle">Registration</h2></header>
 
-        // Dynamic UI Setup
-        if (role === 'faculty') {
-            let code = prompt("Enter Admin Code to continue:");
-            if (code !== ADMIN_CODE) { 
-                alert("Unauthorized!");
-                window.location.href = "/register"; 
-            }
-            
-            document.getElementById('formTitle').innerText = "Faculty Registration";
-            document.getElementById('identifierContainer').innerHTML = '<input type="email" name="email" placeholder="Email ID" required>';
-            document.getElementById('subjectContainer').innerHTML = '<input type="text" name="subject" placeholder="Subject Name" required>';
-            document.getElementById('genderContainer').style.display = 'none';
-            document.getElementById('photoSection').style.display = 'none';
-            document.getElementById('passContainer').style.display = 'none';
-        } else {
-            document.getElementById('formTitle').innerText = "Student Registration";
-            document.getElementById('identifierContainer').innerHTML = '<input type="text" name="enroll" placeholder="Enrollment No" required>';
-            document.getElementById('genderContainer').innerHTML = `
-                <select name="gender" required>
-                    <option value="" disabled selected>Gender</option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                </select>`;
-            document.getElementById('subjectContainer').style.display = 'none';
-            document.getElementById('photoSection').style.display = 'block';
-            document.getElementById('passwordField').required = true;
+        <form id="registrationForm">
+            <div class="form-grid">
+                <div class="input-group full-width">
+                    <input type="text" name="full_name" placeholder="Full Name" required>
+                </div>
+
+                <div class="input-group" id="identifierContainer"></div>
+                <div class="input-group" id="genderContainer"></div>
+                <div class="input-group" id="subjectContainer"></div>
+
+                <div class="input-group">
+                    <select name="year" required>
+                        <option value="" disabled selected>Year</option>
+                        <option value="1">1</option><option value="2">2</option>
+                        <option value="3">3</option><option value="4">4</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <select name="semester" required>
+                        <option value="" disabled selected>Semester</option>
+                        {% for i in range(1, 9) %}<option value="{{ i }}">{{ i }}</option>{% endfor %}
+                    </select>
+                </div>
+
+                <div class="photo-section full-width" id="photoSection">
+                    <label class="multi-upload-box" for="photoInput">
+                        <input type="file" id="photoInput" accept="image/*" multiple hidden>
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                        <p id="uploadText">Upload Face Photos (Min 3)</p>
+                    </label>
+                    <div id="previewGrid" class="preview-grid"></div>
+                </div>
+
+                <div class="input-group password-wrapper" id="passContainer">
+                    <input type="password" id="passwordField" name="password" placeholder="Password">
+                    <i class="fa-solid fa-eye" id="togglePassword"></i>
+                </div>
+
+                <button type="submit" id="regSubmitBtn" class="submit-btn">Complete Registration</button>
+            </div>
+        </form>
+
+        <footer class="form-footer">
+            <a href="/register" class="back-link">Back</a>
+        </footer>
+    </div>
+</main>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const role = urlParams.get('role');
+    const ADMIN_CODE = "123";
+
+    if (role === 'faculty') {
+        let code = prompt("Enter Admin Code to continue:");
+        if (code !== ADMIN_CODE) { 
+            alert("Unauthorized!");
+            window.location.href = "/register"; 
         }
+        document.getElementById('formTitle').innerText = "Faculty Registration";
+        document.getElementById('identifierContainer').innerHTML = '<input type="email" name="email" placeholder="Email ID" required>';
+        document.getElementById('subjectContainer').innerHTML = '<input type="text" name="subject" placeholder="Subject Name" required>';
+        document.getElementById('genderContainer').style.display = 'none';
+        document.getElementById('photoSection').style.display = 'none';
+        document.getElementById('passContainer').style.display = 'none';
+    } else {
+        document.getElementById('formTitle').innerText = "Student Registration";
+        document.getElementById('identifierContainer').innerHTML = '<input type="text" name="enroll" placeholder="Enrollment No" required>';
+        document.getElementById('genderContainer').innerHTML = `
+            <select name="gender" required>
+                <option value="" disabled selected>Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+            </select>`;
+        document.getElementById('subjectContainer').style.display = 'none';
+        document.getElementById('photoSection').style.display = 'block';
+        document.getElementById('passwordField').required = true;
+    }
 
-        // Password Toggle 
-        document.getElementById('togglePassword').addEventListener('click', function() {
-            const passField = document.getElementById('passwordField');
-            passField.type = passField.type === 'password' ? 'text' : 'password';
-            this.classList.toggle('fa-eye');
-            this.classList.toggle('fa-eye-slash');
+    document.getElementById('togglePassword').addEventListener('click', function() {
+        const passField = document.getElementById('passwordField');
+        passField.type = passField.type === 'password' ? 'text' : 'password';
+        this.classList.toggle('fa-eye');
+        this.classList.toggle('fa-eye-slash');
+    });
+
+    document.getElementById('photoInput').addEventListener('change', function() {
+        const grid = document.getElementById('previewGrid');
+        const status = document.getElementById('uploadText');
+        grid.innerHTML = '';
+        const files = Array.from(this.files);
+        status.innerText = files.length + " Photos Selected";
+        files.forEach(f => {
+            const r = new FileReader();
+            r.onload = (e) => {
+                const i = document.createElement('img');
+                i.src = e.target.result;
+                i.className = 'preview-thumb';
+                grid.appendChild(i);
+            };
+            r.readAsDataURL(f);
         });
+    });
 
-        // Photo Preview Logic 
-        document.getElementById('photoInput').addEventListener('change', function() {
-            const grid = document.getElementById('previewGrid');
-            const status = document.getElementById('uploadText');
-            grid.innerHTML = '';
-            
-            const files = Array.from(this.files);
-            status.innerText = files.length + " Photos Selected";
-
-            files.forEach(f => {
-                const r = new FileReader();
-                r.onload = (e) => {
-                    const i = document.createElement('img');
-                    i.src = e.target.result;
-                    i.className = 'preview-thumb'; // Class from style.css
-                    grid.appendChild(i);
-                };
-                r.readAsDataURL(f);
-            });
-        });
-
-        // Form Submit 
-        document.getElementById('registrationForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const submitBtn = document.getElementById('regSubmitBtn');
-            const originalText = submitBtn.innerText;
-
-            submitBtn.innerText = "Processing AI Face Scan...";
-            submitBtn.disabled = true;
-
-            const formData = new FormData(this);
-            if (role === 'student') {
-                const photos = document.getElementById('photoInput').files;
-                if (photos.length < 3) {
-                    alert("Min 3 photos required for AI Training!");
-                    submitBtn.innerText = originalText; submitBtn.disabled = false;
-                    return;
-                }
-                for (let i=0; i<photos.length; i++) formData.append('photos', photos[i]);
-            }
-
-            fetch(role === 'faculty' ? '/register-faculty' : '/register-student', { 
-                method: 'POST', 
-                body: formData 
-            })
-            .then(res => res.json())
-            .then(data => {
-                if(data.status === 'success') {
-                    document.getElementById('successOverlay').style.display = 'flex';
-                } else {
-                    alert("Registration Failed: " + data.message);
-                    submitBtn.innerText = originalText; submitBtn.disabled = false;
-                }
-            })
-            .catch(err => {
-                alert("Server Connection Error!");
+    document.getElementById('registrationForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const submitBtn = document.getElementById('regSubmitBtn');
+        const originalText = submitBtn.innerText;
+        submitBtn.innerText = "Processing AI Face Scan...";
+        submitBtn.disabled = true;
+        const formData = new FormData(this);
+        if (role === 'student') {
+            const photos = document.getElementById('photoInput').files;
+            if (photos.length < 3) {
+                alert("Min 3 photos required for AI Training!");
                 submitBtn.innerText = originalText; submitBtn.disabled = false;
-            });
+                return;
+            }
+            for (let i=0; i<photos.length; i++) formData.append('photos', photos[i]);
+        }
+        fetch(role === 'faculty' ? '/register-faculty' : '/register-student', { 
+            method: 'POST', 
+            body: formData 
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.status === 'success') {
+                document.getElementById('successOverlay').style.display = 'flex';
+            } else {
+                alert("Registration Failed: " + data.message);
+                submitBtn.innerText = originalText; submitBtn.disabled = false;
+            }
+        })
+        .catch(err => {
+            alert("Server Connection Error!");
+            submitBtn.innerText = originalText; submitBtn.disabled = false;
         });
-    </script>
-</body>
-</html>
+    });
+</script>
+{% endblock %}

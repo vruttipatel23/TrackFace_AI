@@ -1,50 +1,35 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FaceTrack AI | Home</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/style.css') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
+{% block title %}FaceTrack AI | Home{% endblock %}
 
-<body>
-    <div class="bg-decoration">
-        <div class="shape shape-1"></div>
-        <div class="shape shape-2"></div>
+{% block content %}
+<main class="container">
+    <div class="glass-box">
+        <header class="hero">
+            <div class="hero-content">
+                <h1>FaceTrack<span>AI</span></h1>
+                <p>AI-powered classroom attendance tracker</p>
+            </div>
+            <div class="hero-image">
+                <img src="{{ url_for('static', filename='Images/icon.png') }}" alt="Face Scan Icon">
+            </div>
+        </header>
+
+        <nav class="nav-grid">
+            <a href="/login" class="action-card fac">
+                <div class="icon-circle"><i class="fa-solid fa-right-to-bracket"></i></div>
+                <div class="card-info">
+                    <h3>Login</h3>
+                </div>
+            </a>
+
+            <a href="/register" class="action-card reg">
+                <div class="icon-circle"><i class="fa-solid fa-user-plus"></i></div>
+                <div class="card-info">
+                    <h3>Register</h3>
+                </div>
+            </a>
+        </nav>
     </div>
-
-    <main class="container">
-        <div class="glass-box">
-            <header class="hero">
-                <div class="hero-content">
-                    <h1>FaceTrack<span>AI</span></h1>
-                    <p>AI-powered classroom attendance tracker</p>
-                </div>
-                <div class="hero-image">
-                    <img src="{{ url_for('static', filename='Images/icon.png') }}" alt="Face Scan Icon">
-                </div>
-            </header>
-
-            <nav class="nav-grid">
-                <a href="/login" class="action-card fac">
-                    <div class="icon-circle"><i class="fa-solid fa-right-to-bracket"></i></div>
-                    <div class="card-info">
-                        <h3>Login</h3>
-                    </div>
-                </a>
-
-                <a href="/register" class="action-card reg">
-                    <div class="icon-circle"><i class="fa-solid fa-user-plus"></i></div>
-                    <div class="card-info">
-                        <h3>Register</h3>
-                    </div>
-                </a>
-            </nav>
-        </div>
-    </main>
-</body>
-
-</html>
+</main>
+{% endblock %}

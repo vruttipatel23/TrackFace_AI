@@ -1,58 +1,46 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Attendance History | FaceTrack AI</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/style.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
-<body>
-    <div class="bg-decoration">
-        <div class="shape shape-1"></div>
-    </div>
-    
-    <main class="container">
-        <div class="glass-box report-list-container">
-            <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
-                <div>
-                    <h2>All <span>Attendance Reports</span></h2>
-                    <p style="color: var(--text-gray); font-size: 0.9rem;">View and manage previous attendance sessions</p>
-                </div>
-                <a href="/faculty-dashboard" class="action-card" style="padding: 10px 20px;">
-                    <i class="fa-solid fa-house"></i> Dashboard
+{% extends "base.html" %}
+
+{% block title %}Attendance History | FaceTrack AI{% endblock %}
+
+{% block content %}
+<main class="container">
+    <div class="glass-box report-list-container">
+        <header class="section-header-split">
+            <div>
+                <h2>All <span>Attendance Reports</span></h2>
+                <p>View and manage previous attendance sessions</p>
+            </div>
+            <a href="/faculty-dashboard" class="action-card btn-small">
+                <i class="fa-solid fa-house"></i> Dashboard
+            </a>
+        </header>
+
+        {% for r in reports %}
+
+        <div class="session-item">
+            <div class="info-group">
+                <h3>{{ r.subject }}</h3>
+                <p>
+                    Year {{ r.year }} (Sem {{ r.semester }})
+                </p>
+            </div>
+            <div class="btn-group">
+                <a href="{{ url_for('attendance_report',
+                                    subject=r.subject,
+                                    year=r.year,
+                                    semester=r.semester) }}" 
+                    class="view-btn">
+                    <i class="fa-solid fa-eye"></i> View Detailed Report
                 </a>
-            </header>
-
-            {% for r in reports %}
-
-            <div class="session-item">
-                <div class="info-group">
-                    <h3>{{ r.subject }}</h3>
-                    <p>
-                        Year {{ r.year }} (Sem {{ r.semester }})
-                    </p>
-
-                </div>
-                <div class="btn-group">
-                    <a href="{{ url_for('attendance_report',
-                                        subject=r.subject,
-                                        year=r.year,
-                                        semester=r.semester) }}" 
-                        class="view-btn">
-
-                        <i class="fa-solid fa-eye"></i> View Detailed Report
-                    </a>
-                </div>
             </div>
-            {% else %}
-            <div class="no-data">
-                <i class="fa-solid fa-folder-open" style="font-size: 3.5rem; margin-bottom: 15px; opacity: 0.2;"></i>
-                <h3>No Reports Found</h3>
-                <p>You haven't taken any attendance for your subjects yet.</p>
-            </div>
-            {% endfor %}
         </div>
-    </main>
-</body>
-</html>
+        {% else %}
+        <div class="no-data">
+            <i class="fa-solid fa-folder-open"></i>
+            <h3>No Reports Found</h3>
+            <p>You haven't taken any attendance for your subjects yet.</p>
+        </div>
+        {% endfor %}
+    </div>
+</main>
+{% endblock %}

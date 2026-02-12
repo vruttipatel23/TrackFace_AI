@@ -1,61 +1,49 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Review Requests | FaceTrack AI</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/style.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
-<body>
-    <div class="bg-decoration">
-        <div class="shape shape-1"></div>
-    </div>
+{% extends "base.html" %}
 
-    <main class="container">
-        <div class="glass-box" style="max-width: 850px;">
-            <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
-                <div>
-                    <h2>Review <span>Attendance Requests</span></h2>
-                    <p style="color: var(--text-gray); font-size: 0.9rem;">Pending corrections for your subjects</p>
+{% block title %}Review Requests | FaceTrack AI{% endblock %}
+
+{% block content %}
+<main class="container">
+    <div class="glass-box review-container">
+        <header class="section-header-split">
+            <div>
+                <h2>Review <span>Attendance Requests</span></h2>
+                <p>Pending corrections for your subjects</p>
+            </div>
+            <a href="/faculty-dashboard" class="action-card btn-small">
+                <i class="fa-solid fa-house"></i> Dashboard
+            </a>
+        </header>
+
+        {% for err, rec, sess in requests %}
+        <div class="request-card">
+            <div class="student-info">
+                <h3>{{ rec.student_name }}</h3>
+                <p><i class="fa-solid fa-id-card"></i> <b>Enrollment:</b> {{ err.student_enrollment }}</p>
+                <p><i class="fa-solid fa-book-open"></i> <b>Subject:</b> {{ sess.subject }}</p>
+                <p><i class="fa-solid fa-calendar-day"></i> <b>Date:</b> {{ sess.date }}</p>
+                <div class="reason-box">
+                    <i class="fa-solid fa-quote-left"></i> <i>{{ err.reason }}</i>
                 </div>
-                <a href="/faculty-dashboard" class="action-card" style="padding: 10px 20px;">
-                    <i class="fa-solid fa-house"></i> Dashboard
+            </div>
+
+            <div class="card-actions">
+                <a href="/faculty/approve-request/{{ err.id }}" class="approve-btn">
+                    <i class="fa-solid fa-check"></i> Approve
                 </a>
-            </header>
-
-            {% for err, rec, sess in requests %}
-            <div class="request-card">
-                <div class="student-info">
-                    <h3>{{ rec.student_name }}</h3>
-                    <p><i class="fa-solid fa-id-card"></i> <b>Enrollment:</b> {{ err.student_enrollment }}</p>
-                    <p><i class="fa-solid fa-book-open"></i> <b>Subject:</b> {{ sess.subject }}</p>
-                    <p><i class="fa-solid fa-calendar-day"></i> <b>Date:</b> {{ sess.date }}</p>
-                    
-                    <div class="reason-box">
-                        <i class="fa-solid fa-quote-left"></i> <i>{{ err.reason }}</i>
-                    </div>
-                </div>
-
-                <div class="actions" style="display: flex; flex-direction: column; gap: 10px;">
-                    <a href="/faculty/approve-request/{{ err.id }}" class="approve-btn">
-                        <i class="fa-solid fa-check"></i> Approve
-                    </a>
-                    
-                    <a href="/faculty/reject-request/{{ err.id }}" class="reject-btn" 
-                    onclick="return confirm('Are you sure you want to reject this request?')">
-                        <i class="fa-solid fa-xmark"></i> Reject
-                    </a>
-                </div>
+                <a href="/faculty/reject-request/{{ err.id }}" class="reject-btn" 
+                   onclick="return confirm('Are you sure you want to reject this request?')">
+                    <i class="fa-solid fa-xmark"></i> Reject
+                </a>
             </div>
-            {% else %}
-            <div class="no-data">
-                <i class="fa-solid fa-clipboard-check" style="font-size: 4rem; margin-bottom: 20px; opacity: 0.2;"></i>
-                <h3>All Caught Up!</h3>
-                <p>No pending attendance correction requests found for your subjects.</p>
-            </div>
-            {% endfor %}
         </div>
-    </main>
-</body>
-</html>
+        {% else %}
+        <div class="no-data">
+            <i class="fa-solid fa-clipboard-check"></i>
+            <h3>All Caught Up!</h3>
+            <p>No pending attendance correction requests found.</p>
+        </div>
+        {% endfor %}
+    </div>
+</main>
+{% endblock %}

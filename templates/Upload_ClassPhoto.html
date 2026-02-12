@@ -1,104 +1,98 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Take Attendance | FaceTrack AI</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/style.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
-<body>
-    <div class="bg-decoration"><div class="shape shape-1"></div></div>
-    
-    <main class="container">
-        <div class="glass-box form-wide">
-            <header style="margin-bottom: 25px;">
-                <h2>Take <span>Attendance</span></h2>
-                <p style="color: var(--text-gray);">Upload class photos</p>
-            </header>
+{% extends "base.html" %}
 
-            <form id="attendanceForm" action="/process-classphoto" method="POST" enctype="multipart/form-data">
-                <div class="form-grid">
-                    <div class="input-group">
-                        <label>Select Subject</label>
-                        <select name="subject" required>
-                            {% for sub in subjects %}
-                            <option value="{{ sub }}">{{ sub }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
+{% block title %}Take Attendance | FaceTrack AI{% endblock %}
 
-                    <div class="input-group">
-                        <label>Class Date</label>
-                        <input type="date" name="date" value="{{ today }}" required>
-                    </div>
+{% block content %}
+<main class="container">
+    <div class="glass-box form-wide">
+        <header class="section-header">
+            <h2>Take <span>Attendance</span></h2>
+            <p>Upload class photos</p>
+        </header>
 
-                    <div class="input-group">
-                        <label>Year</label>
-                        <select name="year" required>
-                            <option value="1">1st Year</option>
-                            <option value="2">2nd Year</option>
-                            <option value="3">3rd Year</option>
-                            <option value="4">4th Year</option>
-                        </select>
-                    </div>
-
-                    <div class="input-group">
-                        <label>Semester</label>
-                        <select name="semester" required>
-                            {% for i in range(1, 9) %}<option value="{{ i }}">{{ i }}</option>{% endfor %}
-                        </select>
-                    </div>
-
-                    <div class="full-width">
-                        <label class="multi-upload-box" for="classPhotos">
-                            <input type="file" id="classPhotos" name="class_photos" multiple accept="image/*" hidden required>
-                            <i class="fa-solid fa-images"></i>
-                            <p id="uploadStatus">Click to upload class photos</p>
-                        </label>
-                        <div id="classPreviewGrid" class="preview-grid"></div>
-                    </div>
-
-                    <button type="submit" id="processBtn" class="submit-btn">
-                        <i class="fa-solid fa-microchip"></i> Start AI Recognition
-                    </button>
+        <form id="attendanceForm" action="/process-classphoto" method="POST" enctype="multipart/form-data">
+            <div class="form-grid">
+                <div class="input-group">
+                    <label>Select Subject</label>
+                    <select name="subject" required>
+                        {% for sub in subjects %}
+                        <option value="{{ sub }}">{{ sub }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
-            </form>
-            
-            <div style="text-align: center; margin-top: 20px;">
-                <a href="/faculty-dashboard" class="back-link">Back to Dashboard</a>
+
+                <div class="input-group">
+                    <label>Class Date</label>
+                    <input type="date" name="date" value="{{ today }}" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Year</label>
+                    <select name="year" required>
+                        <option value="1">1st Year</option>
+                        <option value="2">2nd Year</option>
+                        <option value="3">3rd Year</option>
+                        <option value="4">4th Year</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label>Semester</label>
+                    <select name="semester" required>
+                        {% for i in range(1, 9) %}<option value="{{ i }}">{{ i }}</option>{% endfor %}
+                    </select>
+                </div>
+
+                <div class="full-width">
+                    <label class="multi-upload-box" for="classPhotos">
+                        <input type="file" id="classPhotos" name="class_photos" multiple accept="image/*" hidden required>
+                        <i class="fa-solid fa-images"></i>
+                        <p id="uploadStatus">Click to upload class photos</p>
+                    </label>
+                    <div id="classPreviewGrid" class="preview-grid"></div>
+                </div>
+
+                <button type="submit" id="processBtn" class="submit-btn">
+                    <i class="fa-solid fa-microchip"></i> Start AI Recognition
+                </button>
             </div>
-        </div>
-    </main>
+        </form>
+        
+        <footer class="form-footer">
+            <a href="/faculty-dashboard" class="back-link">Back to Dashboard</a>
+        </footer>
+    </div>
+</main>
+{% endblock %}
 
-    <script>
-        const input = document.getElementById('classPhotos');
-        const status = document.getElementById('uploadStatus');
-        const grid = document.getElementById('classPreviewGrid');
+{% block scripts %}
+<script>
+    const input = document.getElementById('classPhotos');
+    const status = document.getElementById('uploadStatus');
+    const grid = document.getElementById('classPreviewGrid');
 
-        input.addEventListener('change', function() {
-            grid.innerHTML = '';
-            const files = Array.from(this.files);
-            status.innerText = files.length + " Photos Selected";
+    input.addEventListener('change', function() {
+        grid.innerHTML = '';
+        const files = Array.from(this.files);
+        status.innerText = files.length + " Photos Selected";
 
-            files.forEach(file => {
-                const reader = new FileReader();
-                reader.onload = e => {
-                    const img = document.createElement('img');
-                    img.src = e.target.result;
-                    img.className = 'preview-thumb';
-                    grid.appendChild(img);
-                }
-                reader.readAsDataURL(file);
-            });
+        files.forEach(file => {
+            const reader = new FileReader();
+            reader.onload = e => {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.className = 'preview-thumb';
+                grid.appendChild(img);
+            }
+            reader.readAsDataURL(file);
         });
+    });
 
-        // Processing state
-        document.getElementById('attendanceForm').onsubmit = function() {
-            const btn = document.getElementById('processBtn');
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing... Please Wait';
-            btn.disabled = true;
-            btn.style.opacity = "0.7";
-        };
-    </script>
-</body>
-</html>
+    document.getElementById('attendanceForm').onsubmit = function() {
+        const btn = document.getElementById('processBtn');
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing... Please Wait';
+        btn.disabled = true;
+        btn.classList.add('processing');
+    };
+</script>
+{% endblock %}

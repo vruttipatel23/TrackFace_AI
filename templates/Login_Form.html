@@ -1,91 +1,83 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FaceTrack AI | Login Form</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/style.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
-<body>
-    <div class="bg-decoration"><div class="shape shape-1"></div><div class="shape shape-2"></div></div>
-    <main class="container">
-        <div class="glass-box reg-card">
-            <header><h2 id="loginTitle">Login</h2></header>
-            <form id="loginForm">
-                <div class="form-grid">
-                    <div class="input-group full-width" id="idContainer"></div>
-                    <div class="input-group full-width password-wrapper">
-                        <input type="password" name="secret" id="secretField" required>
-                        <i class="fa-solid fa-eye" id="togglePassword" style="cursor:pointer; position: absolute; right: 15px; top: 35%;"></i>
-                    </div>
-                    <button type="submit" id="loginSubmitBtn" class="submit-btn">Login Now</button>
+{% extends "base.html" %}
+
+{% block title %}FaceTrack AI | Login Form{% endblock %}
+
+{% block content %}
+<main class="container">
+    <div class="glass-box reg-card">
+        <header><h2 id="loginTitle">Login</h2></header>
+        <form id="loginForm">
+            <div class="form-grid">
+                <div class="input-group full-width" id="idContainer"></div>
+                <div class="input-group full-width password-wrapper">
+                    <input type="password" name="secret" id="secretField" required>
+                    <i class="fa-solid fa-eye" id="togglePassword"></i>
                 </div>
-            </form>
-            <div style="text-align: center; margin-top: 15px;">
-                <a href="/login" class="action-card back-link">Back</a>
+                <button type="submit" id="loginSubmitBtn" class="submit-btn">Login Now</button>
             </div>
-        </div>
-    </main>
+        </form>
+        <footer class="form-footer">
+            <a href="/login" class="action-card back-link">Back</a>
+        </footer>
+    </div>
+</main>
+{% endblock %}
 
-    <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const role = urlParams.get('role');
-        const loginTitle = document.getElementById('loginTitle');
-        const idContainer = document.getElementById('idContainer');
-        const secretField = document.getElementById('secretField');
+{% block scripts %}
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const role = urlParams.get('role');
+    const loginTitle = document.getElementById('loginTitle');
+    const idContainer = document.getElementById('idContainer');
+    const secretField = document.getElementById('secretField');
 
-        if (role === 'student') {
-            loginTitle.innerText = "Student Login";
-            idContainer.innerHTML = '<input type="text" name="identifier" placeholder="Enrollment Number" required>';
-            secretField.placeholder = "Enter Password";
-        } else {
-            loginTitle.innerText = "Faculty Login";
-            idContainer.innerHTML = '<input type="email" name="identifier" placeholder="Faculty Email" required>';
-            secretField.placeholder = "Enter Admin Code";
-        }
+    if (role === 'student') {
+        loginTitle.innerText = "Student Login";
+        idContainer.innerHTML = '<input type="text" name="identifier" placeholder="Enrollment Number" required>';
+        secretField.placeholder = "Enter Password";
+    } else {
+        loginTitle.innerText = "Faculty Login";
+        idContainer.innerHTML = '<input type="email" name="identifier" placeholder="Faculty Email" required>';
+        secretField.placeholder = "Enter Admin Code";
+    }
 
-        // Eye Toggle
-        document.getElementById('togglePassword').addEventListener('click', function() {
-            const type = secretField.type === 'password' ? 'text' : 'password';
-            secretField.type = type;
-            this.classList.toggle('fa-eye');
-            this.classList.toggle('fa-eye-slash');
-        });
+    document.getElementById('togglePassword').addEventListener('click', function() {
+        const type = secretField.type === 'password' ? 'text' : 'password';
+        secretField.type = type;
+        this.classList.toggle('fa-eye');
+        this.classList.toggle('fa-eye-slash');
+    });
 
-        // Submit Logic
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const submitBtn = document.getElementById('loginSubmitBtn');
-            submitBtn.innerText = "Checking...";
-            submitBtn.disabled = true;
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const submitBtn = document.getElementById('loginSubmitBtn');
+        submitBtn.innerText = "Checking...";
+        submitBtn.disabled = true;
 
-            const formData = new FormData(this);
-            fetch(`/login-process?role=${role}`, {
-                method: 'POST',
-                body: formData
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    
-                    if (data.redirect) {
-                        window.location.href = data.redirect;
-                    } else {
-                        window.location.href = (role === 'faculty') ? "/faculty-dashboard" : "/student-dashboard";
-                    }
+        const formData = new FormData(this);
+        fetch(`/login-process?role=${role}`, {
+            method: 'POST',
+            body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === 'success') {
+                if (data.redirect) {
+                    window.location.href = data.redirect;
                 } else {
-                    alert("Login Failed: " + data.message);
-                    submitBtn.innerText = "Login Now";
-                    submitBtn.disabled = false;
+                    window.location.href = (role === 'faculty') ? "/faculty-dashboard" : "/student-dashboard";
                 }
-            })
-            .catch(err => {
-                alert("Server Error!");
+            } else {
+                alert("Login Failed: " + data.message);
                 submitBtn.innerText = "Login Now";
                 submitBtn.disabled = false;
-            });
+            }
+        })
+        .catch(err => {
+            alert("Server Error!");
+            submitBtn.innerText = "Login Now";
+            submitBtn.disabled = false;
         });
-    </script>
-</body>
-</html>
+    });
+</script>
+{% endblock %}

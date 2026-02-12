@@ -1,31 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daily Attendance Report | FaceTrack AI</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/style.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
-<body>
+{% extends "base.html" %}
 
-<div class="container">
+{% block title %}Daily Attendance Report | FaceTrack AI{% endblock %}
+
+{% block content %}
+<main class="container">
     <div class="glass-box">
-        <header style="margin-bottom: 30px;">
-            <h2 style="color: rgba(255, 255, 255, 0.95); margin-bottom: 10px;">
+        <header class="report-header">
+            <h2>
                 <i class="fa-solid fa-calendar-check"></i> {{ session_data.subject }}
             </h2>
-            <p style="color: rgba(255, 255, 255, 0.8); font-size: 1rem;">
+            <p>
                 <i class="fa-solid fa-calendar-days"></i> {{ session_data.date }} | 
                 <i class="fa-solid fa-graduation-cap"></i> Year {{ session_data.year }} | 
                 <i class="fa-solid fa-book"></i> Semester {{ session_data.semester }}
             </p>
         </header>
 
-        <!-- Image Gallery -->
         {% if images %}
-        <div style="margin-top: 30px;">
-            <h3 style="color: rgba(255, 255, 255, 0.95); margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+        <div class="gallery-section">
+            <h3>
                 <i class="fa-solid fa-images"></i> Uploaded Class Photos
             </h3>
 
@@ -41,25 +34,24 @@
             </div>
         </div>
         {% else %}
-        <div style="text-align: center; padding: 40px; color: rgba(255, 255, 255, 0.7);">
-            <i class="fa-solid fa-image" style="font-size: 3rem; margin-bottom: 15px; opacity: 0.5;"></i>
+        <div class="no-data-msg">
+            <i class="fa-solid fa-image"></i>
             <p>No images found for this session.</p>
         </div>
         {% endif %}
 
-        <!-- Attendance Table -->
-        <div style="margin-top: 40px;">
-            <h3 style="color: rgba(255, 255, 255, 0.95); margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+        <div class="table-section">
+            <h3>
                 <i class="fa-solid fa-list-check"></i> Attendance Records
             </h3>
 
-            <div style="overflow-x: auto; border-radius: 15px;">
+            <div class="table-responsive">
                 <table class="history-table">
                     <thead>
                         <tr>
                             <th><i class="fa-solid fa-id-card"></i> Enrollment No</th>
                             <th><i class="fa-solid fa-user"></i> Student Name</th>
-                            <th style="text-align: center;"><i class="fa-solid fa-circle-check"></i> Status</th>
+                            <th class="text-center"><i class="fa-solid fa-circle-check"></i> Status</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -67,7 +59,7 @@
                         <tr>
                             <td><strong>{{ r.enrollment_no }}</strong></td>
                             <td>{{ r.student_name }}</td>
-                            <td style="text-align: center;">
+                            <td class="text-center">
                                 {% if r.status == "Present" %}
                                     <span class="status-tag tag-present">
                                         <i class="fa-solid fa-check"></i> Present
@@ -85,21 +77,20 @@
             </div>
         </div>
 
-        <div style="margin-top: 30px;">
+        <footer class="actions-footer">
             <a href="javascript:history.back()" class="back-link">
                 <i class="fa-solid fa-arrow-left"></i> Back
             </a>
-        </div>
+        </footer>
     </div>
-</div>
+</main>
 
-<!-- Image Modal -->
 <div id="imageModal" class="image-modal" onclick="closeModal()">
     <span class="modal-close" onclick="closeModal(event)">&times;</span>
     <img class="modal-content" id="modalImage" src="" alt="Full size image">
 </div>
+{% endblock %}
 
+{% block scripts %}
 <script src="{{ url_for('static', filename='JS/modal.js') }}"></script>
-
-</body>
-</html>
+{% endblock %}

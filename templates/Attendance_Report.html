@@ -1,89 +1,60 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Attendance Report | FaceTrack AI</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/style.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
-<body>
+{% extends "base.html" %}
 
+{% block title %}Attendance Report | FaceTrack AI{% endblock %}
+
+{% block content %}
 <main class="container">
-    <div class="glass-box report-card" style="max-width: 1200px !important;">
-
-        <header style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px; flex-wrap: wrap; gap: 20px;">
+    <div class="glass-box report-card">
+        <header class="section-header-split">
             <div>
-                <h2 style="color: rgba(255, 255, 255, 0.95); margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
-                    <i class="fa-solid fa-chart-line"></i> {{ subject }} - Semester Attendance Report
-                </h2>
-                <p style="color: rgba(255, 255, 255, 0.8); font-size: 1rem;">
+                <h2><i class="fa-solid fa-chart-line"></i> {{ subject }} - Semester Report</h2>
+                <p>
                     <i class="fa-solid fa-graduation-cap"></i> Year {{ year }} | 
                     <i class="fa-solid fa-book"></i> Semester {{ semester }}
                 </p>
             </div>
 
-            <div style="display:flex; gap:10px; flex-wrap: wrap;">
+            <div class="header-actions">
                 <a href="{{ url_for('download_report', subject=subject, year=year, semester=semester) }}" 
-                    class="btn btn-success">
+                    class="btn btn-success btn-small">
                     <i class="fa-solid fa-file-csv"></i> Download CSV
                 </a>
-
-                <a href="/faculty-dashboard" class="action-card"
-                   style="background:rgba(255, 255, 255, 0.2);color:#fff;padding:10px 20px;">
+                <a href="/faculty-dashboard" class="action-card btn-small">
                     <i class="fa-solid fa-check"></i> Done
                 </a>
             </div>
         </header>
 
-        <div style="overflow-x:auto; margin-top: 30px;">
+        <div class="table-responsive">
             <table class="history-table">
                 <thead>
                     <tr>
-                        <th style="min-width: 150px;"><i class="fa-solid fa-id-card"></i> Enrollment No</th>
-                        <th style="min-width: 200px;"><i class="fa-solid fa-user"></i> Student Name</th>
-
+                        <th>Enrollment No</th>
+                        <th>Student Name</th>
                         {% for session in sessions %}
-                            <th style="text-align: center; min-width: 120px;">
+                            <th class="text-center">
                                 <a href="{{ url_for('daily_report', session_id=session.id) }}" class="date-link">
-                                    <i class="fa-solid fa-calendar-days"></i><br>
                                     {{ session.date }}
                                 </a>
                             </th>
                         {% endfor %}
-
-                        <th style="text-align:center; min-width: 120px;">
-                            <i class="fa-solid fa-percent"></i> Attendance %
-                        </th>
+                        <th class="text-center">Attendance %</th>
                     </tr>
                 </thead>
-
                 <tbody>
                     {% for row in table_data %}
                     <tr>
                         <td><strong>{{ row.enrollment_no }}</strong></td>
                         <td>{{ row.student_name }}</td>
-
                         {% for status in row.attendance %}
-                        <td style="text-align:center;">
-                            {% if status == "Present" %}
-                                <span class="status-tag tag-present">
-                                    <i class="fa-solid fa-check"></i> P
-                                </span>
-                            {% elif status == "Absent" %}
-                                <span class="status-tag tag-absent">
-                                    <i class="fa-solid fa-xmark"></i> A
-                                </span>
-                            {% else %}
-                                <span style="color: rgba(255, 255, 255, 0.5);">-</span>
-                            {% endif %}
+                        <td class="text-center">
+                            <span class="status-tag {{ 'tag-present' if status == 'Present' else 'tag-absent' if status == 'Absent' else '' }}">
+                                {{ 'P' if status == 'Present' else 'A' if status == 'Absent' else '-' }}
+                            </span>
                         </td>
                         {% endfor %}
-
-                        <td style="text-align:center;">
-                            <div class="percentage-badge">
-                                <strong style="font-size: 1rem; color: var(--text-dark);">{{ row.percentage }}%</strong>
-                            </div>
+                        <td class="text-center">
+                            <div class="percentage-badge"><strong>{{ row.percentage }}%</strong></div>
                             <div class="progress-container">
                                 <div class="progress-bar" style="width: {{ row.percentage }}%;"></div>
                             </div>
@@ -91,12 +62,8 @@
                     </tr>
                     {% endfor %}
                 </tbody>
-
             </table>
         </div>
-
     </div>
 </main>
-
-</body>
-</html>
+{% endblock %}

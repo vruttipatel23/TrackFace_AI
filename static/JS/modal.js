@@ -1,4 +1,3 @@
-// Image Modal Functionality
 function openModal(imageSrc) {
     const modal = document.getElementById('imageModal');
     const modalImg = document.getElementById('modalImage');
@@ -6,7 +5,8 @@ function openModal(imageSrc) {
     if (modal && modalImg) {
         modalImg.src = imageSrc;
         modal.classList.add('active');
-        document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        // Prevent background scrolling while viewing image
+        document.body.style.overflow = 'hidden'; 
     }
 }
 
@@ -14,28 +14,30 @@ function closeModal(event) {
     const modal = document.getElementById('imageModal');
     
     if (modal) {
-        // Prevent closing when clicking on the image itself
-        if (event && event.target.classList.contains('modal-content')) {
+        // Prevent closing if the user clicks the image content itself
+        if (event && event.target.id === 'modalImage') {
             return;
         }
         
         modal.classList.remove('active');
-        document.body.style.overflow = ''; // Restore scrolling
+        // Restore background scrolling
+        document.body.style.overflow = ''; 
     }
 }
 
-// Close modal on Escape key
+// Global Event Listeners for better User Experience
 document.addEventListener('keydown', function(event) {
+    // Close modal on Escape key
     if (event.key === 'Escape') {
         closeModal();
     }
 });
 
-// Close modal when clicking outside the image
+// Handle clicking outside the image (on the backdrop)
 document.addEventListener('click', function(event) {
     const modal = document.getElementById('imageModal');
-    if (modal && event.target === modal) {
+    // If the click is exactly on the modal wrapper, close it
+    if (event.target === modal) {
         closeModal();
     }
 });
-
