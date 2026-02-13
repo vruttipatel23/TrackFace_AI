@@ -4,61 +4,87 @@
 
 {% block content %}
 <main class="container">
-    <div class="glass-box reg-card form-wide">
+    <div class="glass-box reg-card form-wide enhanced-reg-form-card">
         <div id="successOverlay" class="success-overlay">
             <div class="success-icon"><i class="fa-solid fa-circle-check"></i></div>
             <h2>Registration Successful!</h2>
             <p>Your account has been created successfully.</p>
-            <a href="/login" class="submit-btn">Go to Login</a>
+            <a href="/login" class="submit-btn enhanced-reg-btn">Go to Login</a>
         </div>
 
-        <header><h2 id="formTitle">Registration</h2></header>
+        <header class="reg-form-header">
+            <div class="reg-form-icon-wrapper" id="regIconWrapper">
+                <i class="fa-solid fa-user-graduate" id="regIcon"></i>
+            </div>
+            <h2 id="formTitle">Registration</h2>
+            <p id="formSubtitle">Fill in your details to create an account</p>
+        </header>
 
-        <form id="registrationForm">
-            <div class="form-grid">
-                <div class="input-group full-width">
-                    <input type="text" name="full_name" placeholder="Full Name" required>
+        <form id="registrationForm" class="enhanced-reg-form">
+            <div class="form-grid enhanced-form-grid">
+                <div class="input-group full-width enhanced-reg-input">
+                    <label><i class="fa-solid fa-user"></i> Full Name</label>
+                    <div class="input-icon-wrapper">
+                        <i class="fa-solid fa-id-card input-icon-left"></i>
+                        <input type="text" name="full_name" placeholder="Enter your full name" required>
+                    </div>
                 </div>
 
-                <div class="input-group" id="identifierContainer"></div>
-                <div class="input-group" id="genderContainer"></div>
-                <div class="input-group" id="subjectContainer"></div>
+                <div class="input-group enhanced-reg-input" id="identifierContainer"></div>
+                <div class="input-group enhanced-reg-input" id="genderContainer"></div>
+                <div class="input-group enhanced-reg-input" id="subjectContainer"></div>
 
-                <div class="input-group">
+                <div class="input-group enhanced-reg-input">
+                    <label><i class="fa-solid fa-layer-group"></i> Year</label>
                     <select name="year" required>
-                        <option value="" disabled selected>Year</option>
-                        <option value="1">1</option><option value="2">2</option>
-                        <option value="3">3</option><option value="4">4</option>
+                        <option value="" disabled selected>Select Year</option>
+                        <option value="1">1st Year</option><option value="2">2nd Year</option>
+                        <option value="3">3rd Year</option><option value="4">4th Year</option>
                     </select>
                 </div>
 
-                <div class="input-group">
+                <div class="input-group enhanced-reg-input">
+                    <label><i class="fa-solid fa-list-ol"></i> Semester</label>
                     <select name="semester" required>
-                        <option value="" disabled selected>Semester</option>
-                        {% for i in range(1, 9) %}<option value="{{ i }}">{{ i }}</option>{% endfor %}
+                        <option value="" disabled selected>Select Semester</option>
+                        {% for i in range(1, 9) %}<option value="{{ i }}">Semester {{ i }}</option>{% endfor %}
                     </select>
                 </div>
 
                 <div class="photo-section full-width" id="photoSection">
-                    <label class="multi-upload-box" for="photoInput">
+                    <label class="multi-upload-box reg-photo-upload" for="photoInput">
                         <input type="file" id="photoInput" accept="image/*" multiple hidden>
-                        <i class="fa-solid fa-cloud-arrow-up"></i>
-                        <p id="uploadText">Upload Face Photos (Min 3)</p>
+                        <div class="upload-icon-wrapper reg-upload-icon">
+                            <i class="fa-solid fa-camera"></i>
+                        </div>
+                        <p id="uploadText" class="upload-text">Upload Face Photos (Min 3)</p>
+                        <span class="upload-hint">Required for AI face recognition</span>
                     </label>
                     <div id="previewGrid" class="preview-grid"></div>
                 </div>
 
-                <div class="input-group password-wrapper" id="passContainer">
-                    <input type="password" id="passwordField" name="password" placeholder="Password">
-                    <i class="fa-solid fa-eye" id="togglePassword"></i>
+                <div class="input-group full-width enhanced-reg-input" id="passContainer">
+                    <label><i class="fa-solid fa-lock"></i> Password</label>
+                    <div class="password-wrapper">
+                        <div class="input-icon-wrapper">
+                            <i class="fa-solid fa-key input-icon-left"></i>
+                            <input type="password" id="passwordField" name="password" placeholder="Create a password">
+                        </div>
+                        <i class="fa-solid fa-eye toggle-password-icon" id="togglePassword"></i>
+                    </div>
                 </div>
 
-                <button type="submit" id="regSubmitBtn" class="submit-btn">Complete Registration</button>
+                <button type="submit" id="regSubmitBtn" class="submit-btn enhanced-reg-submit-btn">
+                    <span>Complete Registration</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
             </div>
         </form>
 
         <footer class="form-footer">
-            <a href="/register" class="back-link">Back</a>
+            <a href="/register" class="action-card back-link enhanced-back-link">
+                <i class="fa-solid fa-arrow-left"></i> Back
+            </a>
         </footer>
     </div>
 </main>
@@ -70,6 +96,10 @@
     const role = urlParams.get('role');
     const ADMIN_CODE = "123";
 
+    const regIcon = document.getElementById('regIcon');
+    const regIconWrapper = document.getElementById('regIconWrapper');
+    const formSubtitle = document.getElementById('formSubtitle');
+
     if (role === 'faculty') {
         let code = prompt("Enter Admin Code to continue:");
         if (code !== ADMIN_CODE) { 
@@ -77,20 +107,21 @@
             window.location.href = "/register"; 
         }
         document.getElementById('formTitle').innerText = "Faculty Registration";
-        document.getElementById('identifierContainer').innerHTML = '<input type="email" name="email" placeholder="Email ID" required>';
-        document.getElementById('subjectContainer').innerHTML = '<input type="text" name="subject" placeholder="Subject Name" required>';
+        formSubtitle.innerText = "Enter your details to register as faculty";
+        regIcon.className = "fa-solid fa-user-tie";
+        regIconWrapper.className = "reg-form-icon-wrapper faculty-icon-bg";
+        document.getElementById('identifierContainer').innerHTML = '<label><i class="fa-solid fa-envelope"></i> Email</label><div class="input-icon-wrapper"><i class="fa-solid fa-envelope input-icon-left"></i><input type="email" name="email" placeholder="Faculty email address" required></div>';
+        document.getElementById('subjectContainer').innerHTML = '<label><i class="fa-solid fa-book"></i> Subject</label><div class="input-icon-wrapper"><i class="fa-solid fa-graduation-cap input-icon-left"></i><input type="text" name="subject" placeholder="Subject name" required></div>';
         document.getElementById('genderContainer').style.display = 'none';
         document.getElementById('photoSection').style.display = 'none';
         document.getElementById('passContainer').style.display = 'none';
     } else {
         document.getElementById('formTitle').innerText = "Student Registration";
-        document.getElementById('identifierContainer').innerHTML = '<input type="text" name="enroll" placeholder="Enrollment No" required>';
-        document.getElementById('genderContainer').innerHTML = `
-            <select name="gender" required>
-                <option value="" disabled selected>Gender</option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-            </select>`;
+        formSubtitle.innerText = "Enter your details and upload face photos for AI recognition";
+        regIcon.className = "fa-solid fa-user-graduate";
+        regIconWrapper.className = "reg-form-icon-wrapper student-icon-bg";
+        document.getElementById('identifierContainer').innerHTML = '<label><i class="fa-solid fa-id-card"></i> Enrollment No</label><div class="input-icon-wrapper"><i class="fa-solid fa-hashtag input-icon-left"></i><input type="text" name="enroll" placeholder="Enrollment number" required></div>';
+        document.getElementById('genderContainer').innerHTML = `<label><i class="fa-solid fa-venus-mars"></i> Gender</label><select name="gender" required><option value="" disabled selected>Select Gender</option><option value="Male">Male</option><option value="Female">Female</option></select>`;
         document.getElementById('subjectContainer').style.display = 'none';
         document.getElementById('photoSection').style.display = 'block';
         document.getElementById('passwordField').required = true;

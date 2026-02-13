@@ -5,36 +5,55 @@
 {% block content %}
 <main class="container">
     <div class="glass-box report-box">
-        <header class="section-header">
-            <h2>Report <span>Issue</span></h2>
-            <div class="session-info">
-                <p>
-                    <i class="fa-solid fa-book-open"></i> Subject: <b>{{ record.session_ref.subject }}</b>
-                </p>
-                <p>
-                    <i class="fa-solid fa-calendar-day"></i> Date: <b>{{ record.session_ref.date }}</b>
-                </p>
+        <header class="report-error-header">
+            <div class="report-error-header-text">
+                <h2>Report <span>Attendance Issue</span></h2>
+                <p>Request a correction for this session</p>
             </div>
         </header>
 
+        <div class="report-session-info">
+            <div class="report-session-card">
+                <i class="fa-solid fa-book-open"></i>
+                <div>
+                    <span class="report-session-label">Subject</span>
+                    <span class="report-session-value">{{ record.session_ref.subject }}</span>
+                </div>
+            </div>
+            <div class="report-session-card">
+                <i class="fa-solid fa-calendar-day"></i>
+                <div>
+                    <span class="report-session-label">Date</span>
+                    <span class="report-session-value">{{ record.session_ref.date }}</span>
+                </div>
+            </div>
+        </div>
+
         <form action="/report-error/{{ record.id }}" method="POST" class="report-form">
-            <div class="input-group full-width">
-                <label>Why should your attendance be updated?</label>
+            <div class="report-form-group">
+                <label for="reportReason">
+                    <i class="fa-solid fa-comment-dots"></i> Why should your attendance be updated?
+                </label>
                 <textarea 
+                    id="reportReason"
                     name="reason" 
-                    placeholder="Example: I was present in the class but my face was not detected in the photo due to low light..." 
+                    class="report-textarea"
+                    placeholder="Example: I was present in the class but my face was not detected in the photo due to low light or angle..." 
                     rows="5" 
                     required></textarea>
             </div>
             
-            <button type="submit" class="submit-btn">
-                <i class="fa-solid fa-paper-plane"></i> Send Request to Faculty
-            </button>
+            <div class="report-form-actions">
+                <button type="submit" class="submit-btn report-submit-btn">
+                    <i class="fa-solid fa-paper-plane"></i>
+                    <span>Send Request to Faculty</span>
+                </button>
+            </div>
         </form>
 
-        <footer class="form-footer">
-            <a href="/student-dashboard" class="back-link">
-                <i class="fa-solid fa-xmark"></i> Cancel & Go Back
+        <footer class="report-footer">
+            <a href="/student-dashboard" class="back-link report-back-link">
+                <i class="fa-solid fa-arrow-left"></i> Cancel & Go Back
             </a>
         </footer>
     </div>

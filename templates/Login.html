@@ -4,27 +4,47 @@
 
 {% block content %}
 <main class="container">
-    <div class="glass-box reg-card">
-        <header>
-            <h2>Please Select your role to Login</h2>
+    <div class="glass-box reg-card enhanced-login-card">
+        <header class="login-header">
+            <div class="login-header-icon">
+                <i class="fa-solid fa-right-to-bracket"></i>
+            </div>
+            <h2>Welcome To Login Page!</h2>
+            <p>Please select your role to continue</p>
         </header>
 
-        <div class="role-selection-grid">
-            <a href="/login-form?role=student" class="role-card student-card">
+        <div class="role-selection-grid enhanced-role-grid">
+            <a href="/login-form?role=student" class="role-card student-card enhanced-role-card">
+                <div class="role-icon-wrapper student-icon-wrapper">
+                    <i class="fa-solid fa-user-graduate"></i>
+                </div>
                 <div class="card-info">
-                    <h3><i class="fa-solid fa-user-graduate"></i><br>Student</h3>
+                    <h3>Student</h3>
+                    <p class="role-description">Access your attendance records</p>
+                </div>
+                <div class="role-arrow">
+                    <i class="fa-solid fa-arrow-right"></i>
                 </div>
             </a>
 
-            <a href="/login-form?role=faculty" class="role-card faculty-card">
+            <a href="/login-form?role=faculty" class="role-card faculty-card enhanced-role-card">
+                <div class="role-icon-wrapper faculty-icon-wrapper">
+                    <i class="fa-solid fa-user-tie"></i>
+                </div>
                 <div class="card-info">
-                    <h3><i class="fa-solid fa-user-tie"></i><br>Faculty</h3>
+                    <h3>Faculty</h3>
+                    <p class="role-description">Manage class attendance</p>
+                </div>
+                <div class="role-arrow">
+                    <i class="fa-solid fa-arrow-right"></i>
                 </div>
             </a>
         </div>
 
         <footer class="form-footer">
-            <a href="/" class="action-card back-link">Back to Home</a>
+            <a href="/" class="action-card back-link enhanced-back-link">
+                <i class="fa-solid fa-arrow-left"></i> Back to Home
+            </a>
         </footer>
     </div>
 </main>

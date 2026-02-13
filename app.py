@@ -18,7 +18,7 @@ if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 
 # DATABASE CONFIG 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:drashti131@localhost:5432/facetrack_db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:Vrutti%402309@localhost:5432/facetrack_db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
