@@ -4,10 +4,15 @@
 
 {% block content %}
 <main class="container">
-    <div class="glass-box form-wide">
-        <header class="section-header">
-            <h2>Manual <span>Attendance Fix</span></h2>
-            <p>Update attendance records by Enrollment Number</p>
+    <div class="glass-box form-wide manual-fix-card">
+        <header class="manual-fix-header">
+            <div class="manual-fix-icon">
+                <i class="fa-solid fa-user-pen"></i>
+            </div>
+            <div class="manual-fix-header-text">
+                <h2>Manual <span>Attendance Fix</span></h2>
+                <p>Update a student's attendance record by enrollment number</p>
+            </div>
         </header>
 
         {% with messages = get_flashed_messages(with_categories=true) %}
@@ -20,40 +25,59 @@
           {% endif %}
         {% endwith %}
 
-        <form action="/faculty/process-manual-fix" method="POST" class="form-grid">
-            <div class="input-group full-width">
-                <label>Student Enrollment No</label>
-                <input type="text" name="enroll" placeholder="Enter Enrollment No (e.g. 21BE001)" required>
-            </div>
+        <form action="/faculty/process-manual-fix" method="POST" class="manual-fix-form">
+            <div class="manual-fix-grid">
+                <div class="input-group full-width manual-fix-input">
+                    <label>Student Enrollment No <i class="fa-solid fa-id-card"></i></label>
+                    <div class="input-icon-wrapper">
+                        <i class="fa-solid fa-hashtag input-icon-left"></i>
+                        <input type="text" name="enroll" placeholder="e.g. 21BE001" required>
+                    </div>
+                </div>
 
-            <div class="input-group">
-                <label>Subject</label>
-                <select name="subject" required>
-                    <option value="" disabled selected>Select Subject</option>
-                    {% for sub in subjects %}
-                    <option value="{{ sub }}">{{ sub }}</option>
-                    {% endfor %}
-                </select>
-            </div>
+                <div class="input-group manual-fix-input">
+                    <label>Subject <i class="fa-solid fa-book"></i></label>
+                    <div class="input-icon-wrapper">
+                        <i class="fa-solid fa-graduation-cap input-icon-left"></i>
+                        <select name="subject" required>
+                            <option value="" disabled selected>Select Subject</option>
+                            {% for sub in subjects %}
+                            <option value="{{ sub }}">{{ sub }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
 
-            <div class="input-group">
-                <label>Date</label>
-                <input type="date" name="date" required>
-            </div>
+                <div class="input-group manual-fix-input">
+                    <label>Date <i class="fa-solid fa-calendar-days"></i></label>
+                    <div class="input-icon-wrapper">
+                        <i class="fa-solid fa-calendar input-icon-left"></i>
+                        <input type="date" name="date" required>
+                    </div>
+                </div>
 
-            <div class="input-group full-width">
-                <label>New Status</label>
-                <select name="status" required>
-                    <option value="Present">Present</option>
-                    <option value="Absent">Absent</option>
-                </select>
-            </div>
+                <div class="input-group full-width manual-fix-input">
+                    <label>New Status <i class="fa-solid fa-toggle-on"></i></label>
+                    <div class="input-icon-wrapper">
+                        <i class="fa-solid fa-check-double input-icon-left"></i>
+                        <select name="status" required>
+                            <option value="Present">Present</option>
+                            <option value="Absent">Absent</option>
+                        </select>
+                    </div>
+                </div>
 
-            <button type="submit" class="submit-btn">Update Record</button>
+                <button type="submit" class="submit-btn manual-fix-submit-btn">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                    <span>Update Record</span>
+                </button>
+            </div>
         </form>
         
         <footer class="form-footer">
-            <a href="/faculty-dashboard" class="back-link">Back to Dashboard</a>
+            <a href="/faculty-dashboard" class="back-link enhanced-back-link">
+                <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
+            </a>
         </footer>
     </div>
 </main>
