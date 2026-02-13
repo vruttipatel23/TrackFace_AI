@@ -75,7 +75,7 @@ face_app = FaceAnalysis(name="buffalo_l", providers=['CPUExecutionProvider'])
 face_app.prepare(ctx_id=-1, det_size=(1280, 1280)) 
 def _l2norm(v): return v / (np.linalg.norm(v) + 1e-12)
 
-# NAVIGATION & LOGIN ROUTES 
+# NAVIGATION AND LOGIN ROUTES 
 @app.route('/')
 def home(): return render_template('Home.html')
 
