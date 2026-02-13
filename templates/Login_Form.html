@@ -4,20 +4,34 @@
 
 {% block content %}
 <main class="container">
-    <div class="glass-box reg-card">
-        <header><h2 id="loginTitle">Login</h2></header>
-        <form id="loginForm">
+    <div class="glass-box reg-card enhanced-login-form-card">
+        <header class="login-form-header">
+            <div class="login-form-icon-wrapper" id="loginIconWrapper">
+                <i class="fa-solid fa-user-graduate" id="loginIcon"></i>
+            </div>
+            <h2 id="loginTitle">Login</h2>
+            <p id="loginSubtitle">Enter your credentials to continue</p>
+        </header>
+        <form id="loginForm" class="enhanced-login-form">
             <div class="form-grid">
-                <div class="input-group full-width" id="idContainer"></div>
-                <div class="input-group full-width password-wrapper">
-                    <input type="password" name="secret" id="secretField" required>
-                    <i class="fa-solid fa-eye" id="togglePassword"></i>
+                <div class="input-group full-width enhanced-login-input" id="idContainer"></div>
+                <div class="input-group full-width password-wrapper enhanced-login-input">
+                    <div class="input-icon-wrapper">
+                        <i class="fa-solid fa-lock input-icon-left"></i>
+                        <input type="password" name="secret" id="secretField" placeholder="Enter Password" required>
+                    </div>
+                    <i class="fa-solid fa-eye toggle-password-icon" id="togglePassword"></i>
                 </div>
-                <button type="submit" id="loginSubmitBtn" class="submit-btn">Login Now</button>
+                <button type="submit" id="loginSubmitBtn" class="submit-btn enhanced-login-btn">
+                    <span>Login Now</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
             </div>
         </form>
         <footer class="form-footer">
-            <a href="/login" class="action-card back-link">Back</a>
+            <a href="/login" class="action-card back-link enhanced-back-link">
+                <i class="fa-solid fa-arrow-left"></i> Back
+            </a>
         </footer>
     </div>
 </main>
@@ -31,13 +45,23 @@
     const idContainer = document.getElementById('idContainer');
     const secretField = document.getElementById('secretField');
 
+    const loginIcon = document.getElementById('loginIcon');
+    const loginIconWrapper = document.getElementById('loginIconWrapper');
+    const loginSubtitle = document.getElementById('loginSubtitle');
+    
     if (role === 'student') {
         loginTitle.innerText = "Student Login";
-        idContainer.innerHTML = '<input type="text" name="identifier" placeholder="Enrollment Number" required>';
+        loginSubtitle.innerText = "Enter your enrollment number and password";
+        loginIcon.className = "fa-solid fa-user-graduate";
+        loginIconWrapper.className = "login-form-icon-wrapper student-icon-bg";
+        idContainer.innerHTML = '<div class="input-icon-wrapper"><i class="fa-solid fa-id-card input-icon-left"></i><input type="text" name="identifier" placeholder="Enrollment Number" required></div>';
         secretField.placeholder = "Enter Password";
     } else {
         loginTitle.innerText = "Faculty Login";
-        idContainer.innerHTML = '<input type="email" name="identifier" placeholder="Faculty Email" required>';
+        loginSubtitle.innerText = "Enter your email and admin code";
+        loginIcon.className = "fa-solid fa-user-tie";
+        loginIconWrapper.className = "login-form-icon-wrapper faculty-icon-bg";
+        idContainer.innerHTML = '<div class="input-icon-wrapper"><i class="fa-solid fa-envelope input-icon-left"></i><input type="email" name="identifier" placeholder="Faculty Email" required></div>';
         secretField.placeholder = "Enter Admin Code";
     }
 
