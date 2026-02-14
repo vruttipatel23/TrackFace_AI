@@ -20,7 +20,6 @@
                 <div class="input-group enhanced-input-group">
                     <label><i class="fa-solid fa-book"></i> Select Subject</label>
                     <div class="input-wrapper">
-                        <i class="fa-solid fa-graduation-cap input-icon"></i>
                         <select name="subject" required>
                             {% for sub in subjects %}
                             <option value="{{ sub }}">{{ sub }}</option>
@@ -32,30 +31,25 @@
                 <div class="input-group enhanced-input-group">
                     <label><i class="fa-solid fa-calendar-days"></i> Class Date</label>
                     <div class="input-wrapper">
-                        <i class="fa-solid fa-calendar input-icon"></i>
                         <input type="date" name="date" value="{{ today }}" required>
                     </div>
                 </div>
 
                 <div class="input-group enhanced-input-group">
-                    <label><i class="fa-solid fa-layer-group"></i> Year</label>
-                    <div class="input-wrapper">
-                        <i class="fa-solid fa-1 input-icon"></i>
+                    <label><i class="fa-solid fa-layer-group"></i> Year</label>    
                         <select name="year" required>
-                            <option value="1">1st Year</option>
-                            <option value="2">2nd Year</option>
-                            <option value="3">3rd Year</option>
-                            <option value="4">4th Year</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
                         </select>
-                    </div>
                 </div>
 
                 <div class="input-group enhanced-input-group">
                     <label><i class="fa-solid fa-list-ol"></i> Semester</label>
                     <div class="input-wrapper">
-                        <i class="fa-solid fa-hashtag input-icon"></i>
                         <select name="semester" required>
-                            {% for i in range(1, 9) %}<option value="{{ i }}">Semester {{ i }}</option>{% endfor %}
+                            {% for i in range(1, 9) %}<option value="{{ i }}">{{ i }}</option>{% endfor %}
                         </select>
                     </div>
                 </div>
@@ -66,7 +60,7 @@
                         <div class="upload-icon-wrapper">
                             <i class="fa-solid fa-cloud-arrow-up"></i>
                         </div>
-                        <p id="uploadStatus" class="upload-text">Click or drag to upload class photos</p>
+                        <p id="uploadStatus" class="upload-text">Click to upload class photos</p>
                         <span class="upload-hint">Supports multiple images (JPG, PNG, etc.)</span>
                     </label>
                     <div id="classPreviewGrid" class="preview-grid"></div>
@@ -75,13 +69,13 @@
                 <button type="submit" id="processBtn" class="submit-btn enhanced-submit-btn">
                     <i class="fa-solid fa-microchip"></i> 
                     <span>Start AI Recognition</span>
-                    <i class="fa-solid fa-arrow-right"></i>
+                    
                 </button>
             </div>
         </form>
         
         <footer class="form-footer">
-            <a href="/faculty-dashboard" class="back-link">Back to Dashboard</a>
+            <a href="/faculty-dashboard" class="back-link"><i class="fa-solid fa-arrow-left"></i>Back to Dashboard</a>
         </footer>
     </div>
 </main>

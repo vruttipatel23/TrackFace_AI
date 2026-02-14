@@ -10,7 +10,7 @@
                 <i class="fa-solid fa-user-pen"></i>
             </div>
             <div class="manual-fix-header-text">
-                <h2>Manual <span>Attendance Fix</span></h2>
+                <h2>Manual Attendance Fix</h2>
                 <p>Update a student's attendance record by enrollment number</p>
             </div>
         </header>
@@ -29,42 +29,34 @@
             <div class="manual-fix-grid">
                 <div class="input-group full-width manual-fix-input">
                     <label>Student Enrollment No <i class="fa-solid fa-id-card"></i></label>
-                    <div class="input-icon-wrapper">
-                        <i class="fa-solid fa-hashtag input-icon-left"></i>
-                        <input type="text" name="enroll" placeholder="e.g. 21BE001" required>
-                    </div>
+                        <input type="text" name="enroll" placeholder="Enrollment No" required>
                 </div>
 
                 <div class="input-group manual-fix-input">
                     <label>Subject <i class="fa-solid fa-book"></i></label>
-                    <div class="input-icon-wrapper">
-                        <i class="fa-solid fa-graduation-cap input-icon-left"></i>
+                    
                         <select name="subject" required>
                             <option value="" disabled selected>Select Subject</option>
                             {% for sub in subjects %}
                             <option value="{{ sub }}">{{ sub }}</option>
                             {% endfor %}
                         </select>
-                    </div>
+                    
                 </div>
 
                 <div class="input-group manual-fix-input">
                     <label>Date <i class="fa-solid fa-calendar-days"></i></label>
-                    <div class="input-icon-wrapper">
-                        <i class="fa-solid fa-calendar input-icon-left"></i>
                         <input type="date" name="date" required>
-                    </div>
                 </div>
 
                 <div class="input-group full-width manual-fix-input">
                     <label>New Status <i class="fa-solid fa-toggle-on"></i></label>
-                    <div class="input-icon-wrapper">
-                        <i class="fa-solid fa-check-double input-icon-left"></i>
+                    
                         <select name="status" required>
                             <option value="Present">Present</option>
                             <option value="Absent">Absent</option>
                         </select>
-                    </div>
+                    
                 </div>
 
                 <button type="submit" class="submit-btn manual-fix-submit-btn">
